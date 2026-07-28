@@ -1,18 +1,16 @@
 from pages.login_page import LoginPage
-from utils.driver_setup import get_driver 
-from selenium.webdriver.common.by import By 
+from pages.products_page import ProductsPage 
+from utils.driver_setup import get_driver
 
 def test_cart_icon():
     driver = get_driver()
-
-    driver.get("https://www.saucedemo.com/")
 
     login = LoginPage(driver)
     login.enter_username("standard_user")
     login.enter_password("secret_sauce")
     login.click_login() 
 
-    cart = driver.find_element(By.CLASS_NAME, "shopping_cart_link")
+    products = ProductsPage(driver) 
 
-    assert cart.is_displayed() 
+    assert products.is_cart_visible() 
     driver.quit() 

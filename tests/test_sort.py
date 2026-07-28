@@ -1,26 +1,31 @@
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import Select 
-from pages.login_page import LoginPage 
+from selenium.webdriver.support.ui import Select, WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from pages.login_page import LoginPage
 from utils.driver_setup import get_driver
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC 
+
 
 def test_sort():
     driver = get_driver()
-    driver.get("https://www.saucedemo.com/")
 
-    login = LoginPage(driver)
-    login.enter_username("standard_user")
-    login.enter_password("secret_sauce")
-    login.click_login() 
-    print(driver.current_url)
-    
-    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME,"product_sort_container"))) 
-    dropdown = Select(driver.find_element(By.CLASS_NAME, "product_sort_container"))
-    dropdown.select_by_visible_text("Price (low to high)")
+    try:
+        driver.get("https://www.saucedemo.com/")
 
-    prices = driver.find_elements(By.CLASS_NAME, "inventory_item_price")
-    values = [float(price.text.replace("$", "")) for price in prices]
+        login = LoginPage(driver)
+        login.enter_username("standard_user")
+        login.enter_password("secret_sauce")
+        login.click_login()
 
-    assert values == sorted(values)
-    driver.quit() 
+        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "product_sort_container")))
+
+        dropdown = Select(
+            driver.find_element(By.CLASS_NAME, "product_sort_container"))
+        dropdown.select_by_visible_text("Price (low to high)")
+
+        prices = driver.find_elements(By.CLASS_NAME, "inventory_item_price")
+        values = [float(price.text.replace("$", "")) for price in prices]
+
+        assert values == sorted(values)
+
+    finally:
+        driver.quit()

@@ -3,8 +3,7 @@ from utils.driver_setup import get_driver
 
 def test_invalid_login():
     driver = get_driver() 
-    driver.get("https://www.saucedemo.com/")
-
+    
     login = LoginPage(driver)
     login.enter_username("invalid_user")
     login.enter_password("invalid_password")

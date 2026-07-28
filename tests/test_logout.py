@@ -1,10 +1,10 @@
 from pages.login_page import LoginPage 
 from pages.logout_page import LogoutPage 
 from utils.driver_setup import get_driver 
+from selenium.webdriver.support.ui import WebDriverWait
 
 def test_logout():
     driver = get_driver()
-    driver.get("https://www.saucedemo.com/")
 
     login = LoginPage(driver) 
     login.enter_username("standard_user")
@@ -15,5 +15,8 @@ def test_logout():
     logout.open_menu()
     logout.logout() 
 
-    assert "saucedemo.com" in driver.current_url 
+    WebDriverWait(driver,10).until(lambda d: "saucedemo.com" in d.current_url.lower())
+
+    assert "saucedemo.com" in driver.current_url.lower() 
+
     driver.quit() 

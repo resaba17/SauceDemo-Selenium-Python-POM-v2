@@ -1,9 +1,9 @@
+from pages.login_page import LoginPage
+from pages.checkout_page import CheckoutPage
+from utils.driver_setup import get_driver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-
-from pages.login_page import LoginPage
-from utils.driver_setup import get_driver
 
 
 def test_complete_checkout():
@@ -15,31 +15,19 @@ def test_complete_checkout():
     login.enter_password("secret_sauce")
     login.click_login()
 
-    WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.CLASS_NAME, "inventory_item"))
-    )
+    WebDriverWait(driver,10).until(EC.presence_of_element_located((By.CLASS_NAME,"inventory_item")))
 
-    # Add first product
-    driver.find_element(By.XPATH, "//button[contains(text(),'Add to cart')]").click()
+    driver.find_element(By.XPATH,"//button[contains(text(),'Add to cart')]").click()
+    driver.find_element(By.CLASS_NAME,"shopping_cart_link").click()
 
-    # Open cart
-    driver.find_element(By.CLASS_NAME, "shopping_cart_link").click()
+    checkout = CheckoutPage(driver)
+    checkout.click_checkout()
+    checkout.enter_first_name("Resaba")
+    checkout.enter_last_name("User")
+    checkout.enter_postal_code("600001")
+    checkout.click_continue()
+    checkout.click_finish()
 
-    # Checkout
-    driver.find_element(By.ID, "checkout").click()
-
-    # Enter user details
-    driver.find_element(By.ID, "first-name").send_keys("Resaba")
-    driver.find_element(By.ID, "last-name").send_keys("User")
-    driver.find_element(By.ID, "postal-code").send_keys("600001")
-
-    driver.find_element(By.ID, "continue").click()
-
-    # Finish order
-    driver.find_element(By.ID, "finish").click()
-
-    # Verify success message
-    message = driver.find_element(By.CLASS_NAME, "complete-header").text
-    assert message == "Thank you for your order!"
+    assert checkout.get_success_message() == "Thank you for your order!"
 
     driver.quit()

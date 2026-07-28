@@ -13,8 +13,8 @@ class LoginPage:
     def enter_username(self, username):
      WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(self.username)).send_keys(username) 
     def enter_password(self, password):
-      self.driver.find_element(*self.password).send_keys(password) 
+       WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(self.password)).send_keys(password)
     def click_login(self):
-     self.driver.find_element(*self.login_button).click() 
+      WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(self.login_button)).click() 
     def get_error_message(self):
      return WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(self.error_message)).text 
